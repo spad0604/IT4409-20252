@@ -1,0 +1,23 @@
+[
+  {
+    "id": "20225126",
+    "name": "Nguyễn Văn Giáp",
+    "className": "IT4409",
+    "dob": "2004-04-06",
+    "email": "giap.nv225126@sis.hust.edu.vn"
+  },
+  {
+    "id": "20225127",
+    "name": "Trần Thị Lan",
+    "className": "IT4409",
+    "dob": "2004-11-03",
+    "email": "lan.tt225127@sis.hust.edu.vn"
+  },
+  {
+    "id": "20225128",
+    "name": "Lê Minh Quân",
+    "className": "IT4409",
+    "dob": "2004-02-14",
+    "email": "quan.lm225128@sis.hust.edu.vn"
+  }
+]

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài tập JS</title>
+</head>
+
+<body>
+
+    <div>
+        <h2>Bài 2: Tính điểm trung bình</h2>
+        <p id="average-result"></p>
+    </div>
+
+    <hr>
+
+    <div>
+        <h2>Bài 4: Thêm vào danh sách</h2>
+        <input type="text" id="itemInput" placeholder="Nhập nội dung...">
+        <button id="addButton">Thêm</button>
+        <ul id="itemList"></ul>
+    </div>
+
+    <script>
+        const students = [
+            { name: "An", score: 85 },
+            { name: "Bình", score: 90 },
+            { name: "Giáp", score: 95 },
+            { name: "Dũng", score: 75 },
+            { name: "Hương", score: 80 },
+            { name: "Lan", score: 88 },
+            { name: "Minh", score: 92 },
+            { name: "Phương", score: 78 },
+            { name: "Quang", score: 82 },
+            { name: "Thảo", score: 91 },
+            { name: "Tuấn", score: 87 },
+            { name: "Vy", score: 89 },
+            { name: "Xuân", score: 94 },
+            { name: "Yến", score: 83 },
+            { name: "Zara", score: 86 }
+        ];
+
+        const scores = students.map(s => s.score);
+
+        const totalScore = scores.reduce((total, current) => total + current, 0);
+        const average = totalScore / students.length;
+
+        document.getElementById('average-result').innerText = "Điểm trung bình: " + average;
+        console.log("Điểm trung bình:", average);
+
+
+        // --- Bài 4 ---
+        const input = document.getElementById('itemInput');
+        const button = document.getElementById('addButton');
+        const list = document.getElementById('itemList');
+
+        button.addEventListener('click', function () {
+            const text = input.value.trim();
+            if (text !== "") {
+                const li = document.createElement('li');
+                li.textContent = text;
+                list.appendChild(li);
+                input.value = "";
+                input.focus();
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,44 @@
+[
+  {
+    "studentId": "20225126",
+    "semester": "2024-1",
+    "subject": "Lập trình Web",
+    "qt": 8.5,
+    "ck": 7.5
+  },
+  {
+    "studentId": "20225126",
+    "semester": "2024-1",
+    "subject": "Cấu trúc dữ liệu",
+    "qt": 7.0,
+    "ck": 8.0
+  },
+  {
+    "studentId": "20225126",
+    "semester": "2024-2",
+    "subject": "React cơ bản",
+    "qt": 9.0,
+    "ck": 8.0
+  },
+  {
+    "studentId": "20225127",
+    "semester": "2024-1",
+    "subject": "Lập trình C",
+    "qt": 6.5,
+    "ck": 7.0
+  },
+  {
+    "studentId": "20225127",
+    "semester": "2024-2",
+    "subject": "Cơ sở dữ liệu",
+    "qt": 8.0,
+    "ck": 8.5
+  },
+  {
+    "studentId": "20225128",
+    "semester": "2024-1",
+    "subject": "Toán rời rạc",
+    "qt": 7.5,
+    "ck": 7.0
+  }
+]

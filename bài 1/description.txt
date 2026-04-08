@@ -1,0 +1,8 @@
+Bài 1: Trang thông tin lịch học (bai1.html) ---
+1. Tạo cấu trúc HTML5 với các thẻ semantic: <header>, <main>, <section>, <figure>, <footer>.
+2. Phần thông tin sinh viên dùng thẻ <figure> để chèn ảnh chân dung kèm <figcaption>, và <ul>/<li> liệt kê họ tên, MSSV.
+3. Bảng thời khóa biểu dùng <table> với <thead>, <tbody>, <th>, <td>; thêm <caption> để đặt tiêu đề mô tả nội dung bảng.
+4. Dữ liệu lịch học được điền thật từ hệ thống đăng ký học của BKHN: môn IT4409, IT4651 (LT+BT và TN), IT4997.
+5. Môn TN được ghi chú học xen kẽ các tuần 30, 32, 35, 37, 39; Đồ án không có lịch lớp cố định nên dùng colspan.
+6. Cuối bảng thêm thẻ <p> chứa cảm nhận cá nhân về lịch học trong học kỳ.
+7. Footer ghi MSSV và ngày tạo theo yêu cầu.

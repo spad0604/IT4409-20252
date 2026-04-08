@@ -1,0 +1,4 @@
+Ex1: Create a simple page based on HTML and CSS.
+This folder contains:
+- bai3.html — example HTML page
+- style.css — basic styles

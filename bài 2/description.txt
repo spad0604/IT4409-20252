@@ -1,0 +1,6 @@
+Bài 2: Trang Google Search (bai2.html) ---
+1. Tạo cấu trúc HTML5 với <header>, <main>, <footer> đúng semantic HTML.
+2. Form tìm kiếm dùng <form action="https://www.google.com/search" method="get"> để form hoạt động thật với Google.
+3. Trường nhập từ khóa dùng <input type="search" name="q"> vì "q" là tham số chuẩn Google dùng để nhận từ khóa.
+4. Không sử dụng bất kỳ CSS hay JavaScript nào; toàn bộ giao diện chỉ dựa vào HTML thuần.
+5. Footer ghi tên, MSSV và ngày tạo; thêm các liên kết điều hướng mô phỏng footer thật của Google.

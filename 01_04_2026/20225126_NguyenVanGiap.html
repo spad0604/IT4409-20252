@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bài tập JS</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 24px;
+        }
+
+        button {
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+
+        #output {
+            margin-top: 12px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            white-space: pre-wrap;
+            min-height: 140px;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <h2>Bài: Async/Await</h2>
+        <button id="run-no-await">Chạy: không dùng await</button>
+        <button id="run-with-await">Chạy: có dùng async/await</button>
+        <pre id="output"></pre>
+    </div>
+
+    <script>
+        const outputEl = document.getElementById('output');
+
+        function log(message) {
+            outputEl.textContent += message + "\n";
+            console.log(message);
+        }
+
+        function separator(title) {
+            const line = "-".repeat(40);
+            log(line);
+            log(title);
+            log(line);
+        }
+
+        function fetchData() {
+            return new Promise((resolve) => {
+                setTimeout(() => resolve("Data received"), 1000);
+            });
+        }
+
+        function loadWithoutAwait() {
+            outputEl.textContent = "";
+            separator("TRƯỜNG HỢP 1: KHÔNG DÙNG await");
+
+            log("Before (no await)");
+            const dataPromise = fetchData();
+            log("After (no await) - dataPromise = " + dataPromise);
+
+            dataPromise.then((data) => {
+                log("Then (no await) - data = " + data);
+            });
+
+            log("This log runs first! (no await)");
+        }
+
+        async function loadWithAwait() {
+            outputEl.textContent = "";
+            separator("TRƯỜNG HỢP 2: CÓ DÙNG async/await");
+
+            log("Before await");
+            const data = await fetchData();
+            log("After await: " + data);
+            log("This log runs after await completes");
+        }
+
+        document.getElementById('run-no-await').addEventListener('click', loadWithoutAwait);
+        document.getElementById('run-with-await').addEventListener('click', loadWithAwait);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,4 @@
+Ex2: Create a page following responsive web design.
+This folder contains:
+- bai4.html — responsive example
+- style.css — styles with media queries
