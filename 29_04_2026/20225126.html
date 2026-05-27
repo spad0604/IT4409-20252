@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>20225126 - CRUD Users</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #f4f4f4;
+        color: #222;
+      }
+
+      .container {
+        max-width: 1100px;
+        margin: 24px auto;
+        padding: 24px;
+        background: #fff;
+        border: 1px solid #ddd;
+      }
+
+      h1,
+      h2 {
+        margin-top: 0;
+      }
+
+      .note {
+        margin-bottom: 16px;
+        padding: 12px;
+        border: 1px solid #cfe2ff;
+        background: #eef5ff;
+      }
+
+      .toolbar,
+      .form-grid,
+      .form-actions,
+      .pagination {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .toolbar,
+      .form-box,
+      .table-box {
+        margin-bottom: 20px;
+      }
+
+      .form-box {
+        padding: 16px;
+        border: 1px solid #ddd;
+        background: #fafafa;
+      }
+
+      .form-grid > label {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        min-width: 220px;
+        flex: 1 1 240px;
+      }
+
+      input,
+      button {
+        padding: 10px 12px;
+        font: inherit;
+      }
+
+      button {
+        cursor: pointer;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #fff;
+      }
+
+      th,
+      td {
+        border: 1px solid #ccc;
+        padding: 10px;
+        text-align: left;
+        vertical-align: top;
+      }
+
+      th {
+        background: #f0f0f0;
+      }
+
+      .status,
+      .error {
+        margin-bottom: 16px;
+        padding: 12px;
+        border: 1px solid #ddd;
+      }
+
+      .error {
+        color: #a61b1b;
+        background: #fdecec;
+        border-color: #f4b8b8;
+      }
+
+      .status {
+        background: #f5f5f5;
+      }
+
+      .actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .pagination {
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 16px;
+      }
+
+      .pagination-controls {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          margin: 0;
+          padding: 16px;
+          border: 0;
+        }
+
+        .pagination {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Quản lý người dùng</h1>
+
+      <div class="note">
+        Dữ liệu dùng API <strong>JSONPlaceholder</strong>. Các thao tác thêm, sửa, xóa sẽ cập nhật giao diện ngay trên trang.
+      </div>
+
+      <div class="toolbar">
+        <input id="searchInput" type="search" placeholder="Tìm theo tên người dùng" />
+      </div>
+
+      <div class="form-box">
+        <h2 id="formTitle">Thêm người dùng</h2>
+        <form id="userForm">
+          <div class="form-grid">
+            <label>
+              Họ tên
+              <input id="nameInput" name="name" type="text" required />
+            </label>
+            <label>
+              Email
+              <input id="emailInput" name="email" type="email" required />
+            </label>
+            <label>
+              Số điện thoại
+              <input id="phoneInput" name="phone" type="text" required />
+            </label>
+          </div>
+          <div class="form-actions" style="margin-top: 16px">
+            <button id="submitButton" type="submit">Thêm người dùng</button>
+            <button id="cancelButton" type="button" hidden>Hủy sửa</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="messageBox"></div>
+
+      <div class="table-box">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Hành động</th>
+            </tr>
+          </thead>
+          <tbody id="userTableBody"></tbody>
+        </table>
+        <div class="pagination">
+          <div id="paginationSummary"></div>
+          <div class="pagination-controls">
+            <label for="pageSizeSelect">Số dòng/trang</label>
+            <select id="pageSizeSelect">
+              <option value="5">5</option>
+              <option value="10" selected>10</option>
+              <option value="20">20</option>
+            </select>
+            <button id="prevButton" type="button">Trước</button>
+            <span id="pageInfo"></span>
+            <button id="nextButton" type="button">Sau</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const API_URL = 'https://jsonplaceholder.typicode.com/users';
+
+      const state = {
+        users: [],
+        searchKeyword: '',
+        currentPage: 1,
+        pageSize: 10,
+        editingUserId: null,
+        loading: true,
+        errorMessage: '',
+        formMessage: '',
+      };
+
+      const searchInput = document.getElementById('searchInput');
+      const userForm = document.getElementById('userForm');
+      const nameInput = document.getElementById('nameInput');
+      const emailInput = document.getElementById('emailInput');
+      const phoneInput = document.getElementById('phoneInput');
+      const submitButton = document.getElementById('submitButton');
+      const cancelButton = document.getElementById('cancelButton');
+      const formTitle = document.getElementById('formTitle');
+      const messageBox = document.getElementById('messageBox');
+      const userTableBody = document.getElementById('userTableBody');
+      const pageSizeSelect = document.getElementById('pageSizeSelect');
+      const prevButton = document.getElementById('prevButton');
+      const nextButton = document.getElementById('nextButton');
+      const pageInfo = document.getElementById('pageInfo');
+      const paginationSummary = document.getElementById('paginationSummary');
+
+      function escapeHtml(value) {
+        return String(value)
+          .replaceAll('&', '&amp;')
+          .replaceAll('<', '&lt;')
+          .replaceAll('>', '&gt;')
+          .replaceAll('"', '&quot;')
+          .replaceAll("'", '&#39;');
+      }
+
+      function getFilteredUsers() {
+        const keyword = state.searchKeyword.trim().toLowerCase();
+
+        if (!keyword) {
+          return state.users;
+        }
+
+        return state.users.filter((user) => user.name.toLowerCase().includes(keyword));
+      }
+
+      function resetForm() {
+        userForm.reset();
+        state.editingUserId = null;
+        state.formMessage = '';
+        formTitle.textContent = 'Thêm người dùng';
+        submitButton.textContent = 'Thêm người dùng';
+        cancelButton.hidden = true;
+      }
+
+      function showMessage() {
+        const messages = [];
+
+        if (state.errorMessage) {
+          messages.push('<div class="error">' + escapeHtml(state.errorMessage) + '</div>');
+        }
+
+        if (state.formMessage) {
+          messages.push('<div class="status">' + escapeHtml(state.formMessage) + '</div>');
+        }
+
+        if (state.loading) {
+          messages.push('<div class="status">Đang tải dữ liệu...</div>');
+        }
+
+        messageBox.innerHTML = messages.join('');
+      }
+
+      function renderTable() {
+        showMessage();
+
+        const filteredUsers = getFilteredUsers();
+        const totalPages = Math.max(1, Math.ceil(filteredUsers.length / state.pageSize));
+
+        if (state.currentPage > totalPages) {
+          state.currentPage = totalPages;
+        }
+
+        const startIndex = (state.currentPage - 1) * state.pageSize;
+        const paginatedUsers = filteredUsers.slice(startIndex, startIndex + state.pageSize);
+
+        if (!state.loading && paginatedUsers.length === 0) {
+          userTableBody.innerHTML = '<tr><td colspan="4">Không có người dùng phù hợp.</td></tr>';
+        } else {
+          userTableBody.innerHTML = paginatedUsers
+            .map((user) => {
+              return `
+                <tr>
+                  <td>${escapeHtml(user.name)}</td>
+                  <td>${escapeHtml(user.email)}</td>
+                  <td>${escapeHtml(user.phone)}</td>
+                  <td>
+                    <div class="actions">
+                      <button type="button" data-action="edit" data-id="${user.id}">Sửa</button>
+                      <button type="button" data-action="delete" data-id="${user.id}">Xóa</button>
+                    </div>
+                  </td>
+                </tr>
+              `;
+            })
+            .join('');
+        }
+
+        const from = filteredUsers.length === 0 ? 0 : startIndex + 1;
+        const to = Math.min(startIndex + state.pageSize, filteredUsers.length);
+
+        paginationSummary.textContent = `Hiển thị ${from}-${to} trên tổng ${filteredUsers.length} người dùng`;
+        pageInfo.textContent = `Trang ${state.currentPage}/${totalPages}`;
+        prevButton.disabled = state.currentPage === 1;
+        nextButton.disabled = state.currentPage === totalPages;
+      }
+
+      function fillFormForEdit(userId) {
+        const user = state.users.find((item) => item.id === userId);
+
+        if (!user) {
+          return;
+        }
+
+        state.editingUserId = userId;
+        state.formMessage = '';
+        formTitle.textContent = 'Cập nhật người dùng';
+        submitButton.textContent = 'Lưu thay đổi';
+        cancelButton.hidden = false;
+
+        nameInput.value = user.name;
+        emailInput.value = user.email;
+        phoneInput.value = user.phone;
+      }
+
+      async function loadUsers() {
+        try {
+          state.loading = true;
+          state.errorMessage = '';
+          renderTable();
+
+          const response = await fetch(API_URL);
+
+          if (!response.ok) {
+            throw new Error('Không thể tải danh sách người dùng.');
+          }
+
+          const data = await response.json();
+          state.users = data.map((user) => ({
+            id: user.id,
+            name: user.name || '',
+            email: user.email || '',
+            phone: user.phone || '',
+          }));
+        } catch (error) {
+          state.errorMessage = error.message || 'Đã xảy ra lỗi khi tải dữ liệu.';
+        } finally {
+          state.loading = false;
+          renderTable();
+        }
+      }
+
+      async function createUser(userData) {
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: JSON.stringify(userData),
+        });
+
+        if (!response.ok) {
+          throw new Error('Không thể thêm người dùng.');
+        }
+
+        const createdUser = await response.json();
+
+        state.users.unshift({
+          id: createdUser.id || Date.now(),
+          ...userData,
+        });
+        state.formMessage = 'Thêm người dùng thành công.';
+      }
+
+      async function updateUser(userData) {
+        const response = await fetch(API_URL + '/' + state.editingUserId, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: JSON.stringify(userData),
+        });
+
+        if (!response.ok) {
+          throw new Error('Không thể cập nhật người dùng.');
+        }
+
+        const updatedUser = await response.json();
+
+        state.users = state.users.map((user) => {
+          if (user.id !== state.editingUserId) {
+            return user;
+          }
+
+          return {
+            id: user.id,
+            name: updatedUser.name || userData.name,
+            email: updatedUser.email || userData.email,
+            phone: updatedUser.phone || userData.phone,
+          };
+        });
+
+        state.formMessage = 'Cập nhật người dùng thành công.';
+      }
+
+      async function deleteUser(userId) {
+        const response = await fetch(API_URL + '/' + userId, {
+          method: 'DELETE',
+        });
+
+        if (!response.ok) {
+          throw new Error('Không thể xóa người dùng.');
+        }
+
+        state.users = state.users.filter((user) => user.id !== userId);
+        state.formMessage = 'Xóa người dùng thành công.';
+
+        if (state.editingUserId === userId) {
+          resetForm();
+        }
+      }
+
+      searchInput.addEventListener('input', function (event) {
+        state.searchKeyword = event.target.value;
+        state.currentPage = 1;
+        renderTable();
+      });
+
+      pageSizeSelect.addEventListener('change', function (event) {
+        state.pageSize = Number(event.target.value);
+        state.currentPage = 1;
+        renderTable();
+      });
+
+      prevButton.addEventListener('click', function () {
+        if (state.currentPage > 1) {
+          state.currentPage -= 1;
+          renderTable();
+        }
+      });
+
+      nextButton.addEventListener('click', function () {
+        const filteredUsers = getFilteredUsers();
+        const totalPages = Math.max(1, Math.ceil(filteredUsers.length / state.pageSize));
+
+        if (state.currentPage < totalPages) {
+          state.currentPage += 1;
+          renderTable();
+        }
+      });
+
+      cancelButton.addEventListener('click', function () {
+        resetForm();
+        renderTable();
+      });
+
+      userForm.addEventListener('submit', async function (event) {
+        event.preventDefault();
+
+        const userData = {
+          name: nameInput.value.trim(),
+          email: emailInput.value.trim(),
+          phone: phoneInput.value.trim(),
+        };
+
+        if (!userData.name || !userData.email || !userData.phone) {
+          state.errorMessage = 'Vui lòng nhập đầy đủ họ tên, email và số điện thoại.';
+          state.formMessage = '';
+          renderTable();
+          return;
+        }
+
+        try {
+          state.errorMessage = '';
+          state.formMessage = '';
+          submitButton.disabled = true;
+
+          if (state.editingUserId === null) {
+            await createUser(userData);
+          } else {
+            await updateUser(userData);
+          }
+
+          resetForm();
+          renderTable();
+        } catch (error) {
+          state.errorMessage = error.message || 'Không thể lưu người dùng.';
+          renderTable();
+        } finally {
+          submitButton.disabled = false;
+        }
+      });
+
+      userTableBody.addEventListener('click', async function (event) {
+        const button = event.target.closest('button[data-action]');
+
+        if (!button) {
+          return;
+        }
+
+        const action = button.dataset.action;
+        const userId = Number(button.dataset.id);
+
+        if (action === 'edit') {
+          fillFormForEdit(userId);
+          return;
+        }
+
+        if (action === 'delete') {
+          const confirmed = window.confirm('Bạn có chắc muốn xóa người dùng này không?');
+
+          if (!confirmed) {
+            return;
+          }
+
+          try {
+            state.errorMessage = '';
+            state.formMessage = '';
+            button.disabled = true;
+            await deleteUser(userId);
+            renderTable();
+          } catch (error) {
+            state.errorMessage = error.message || 'Không thể xóa người dùng.';
+            renderTable();
+          } finally {
+            button.disabled = false;
+          }
+        }
+      });
+
+      loadUsers();
+    </script>
+  </body>
+</html>

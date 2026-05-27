@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quan ly nguoi dung</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #f5f2ec;
+        --panel: #ffffff;
+        --ink: #1b1b1f;
+        --muted: #6b6b72;
+        --accent: #0f7a6f;
+        --accent-2: #f29f05;
+        --danger: #c0392b;
+        --border: #e0dcd3;
+        --shadow: 0 16px 30px rgba(15, 20, 20, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Space Grotesk", sans-serif;
+        background: radial-gradient(circle at top left, #f7efe3, #f5f2ec 55%, #eef4f1 100%);
+        color: var(--ink);
+      }
+
+      .page {
+        min-height: 100vh;
+        padding: 32px 16px 48px;
+      }
+
+      .shell {
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+
+      .header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+
+      .title {
+        font-size: 32px;
+        font-weight: 700;
+        margin: 0;
+      }
+
+      .subtitle {
+        margin: 6px 0 0;
+        color: var(--muted);
+      }
+
+      .actions {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .search {
+        position: relative;
+        min-width: 260px;
+        flex: 1;
+      }
+
+      .search input {
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        font-size: 14px;
+        background: var(--panel);
+      }
+
+      .btn {
+        border: none;
+        padding: 12px 18px;
+        border-radius: 10px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+      }
+
+      .btn-primary {
+        background: var(--accent);
+        color: #fff;
+        box-shadow: 0 10px 20px rgba(15, 122, 111, 0.25);
+      }
+
+      .btn-secondary {
+        background: #fff;
+        border: 1px solid var(--border);
+        color: var(--ink);
+      }
+
+      .btn-danger {
+        background: #fdecea;
+        color: var(--danger);
+      }
+
+      .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      .btn:hover:not(:disabled) {
+        transform: translateY(-1px);
+      }
+
+      .panel {
+        background: var(--panel);
+        border-radius: 16px;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--border);
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 720px;
+      }
+
+      th,
+      td {
+        text-align: left;
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--border);
+        font-size: 14px;
+      }
+
+      th {
+        background: #f8f5ef;
+        font-weight: 600;
+        color: var(--muted);
+      }
+
+      tr:hover td {
+        background: #fdfbf8;
+      }
+
+      .row-actions {
+        display: flex;
+        gap: 8px;
+      }
+
+      .pagination {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 16px;
+        flex-wrap: wrap;
+      }
+
+      .pagination .meta {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      select {
+        padding: 8px 10px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: #fff;
+      }
+
+      .status {
+        margin: 12px 0 0;
+        color: var(--muted);
+      }
+
+      .toast {
+        position: fixed;
+        left: 50%;
+        bottom: 24px;
+        transform: translateX(-50%);
+        background: #fff;
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+        padding: 12px 16px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        z-index: 20;
+        min-width: 280px;
+        max-width: 90vw;
+      }
+
+      .toast.error {
+        border-color: #f1c4be;
+      }
+
+      .toast .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--danger);
+      }
+
+      .error-text {
+        color: var(--danger);
+        font-size: 12px;
+        margin-top: 6px;
+      }
+
+      .overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 20, 20, 0.55);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        z-index: 10;
+      }
+
+      .modal {
+        width: 400px;
+        background: #fff;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: var(--shadow);
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+
+      .modal-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin: 0;
+      }
+
+      .modal-form {
+        display: grid;
+        gap: 12px;
+      }
+
+      .modal-form label {
+        font-size: 13px;
+        font-weight: 500;
+      }
+
+      .modal-form input {
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        font-size: 14px;
+      }
+
+      .modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 8px;
+      }
+
+      .empty {
+        padding: 18px;
+        text-align: center;
+        color: var(--muted);
+      }
+
+      @media (max-width: 768px) {
+        .header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        table {
+          display: block;
+          overflow-x: auto;
+          font-size: 12px;
+        }
+
+        th,
+        td {
+          padding: 8px 6px;
+        }
+
+        .modal {
+          width: 90%;
+          padding: 15px;
+        }
+
+        button,
+        .btn {
+          min-width: 44px;
+          min-height: 44px;
+        }
+
+        .title {
+          font-size: 24px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel">
+      const { useEffect, useMemo, useState } = React;
+
+      const API_BASE = "http://localhost:5000/api/users";
+
+      const buildErrorMessage = (response, result, fallback) => {
+        const parts = [];
+
+        if (response && response.status) {
+          parts.push(`(${response.status})`);
+        }
+
+        if (result && result.message) {
+          parts.push(result.message);
+        }
+
+        if (result && result.error) {
+          parts.push(result.error);
+        }
+
+        return parts.length ? parts.join(" ") : fallback;
+      };
+
+      const useDebounce = (value, delay = 500) => {
+        const [debounced, setDebounced] = useState(value);
+
+        useEffect(() => {
+          const timer = setTimeout(() => setDebounced(value), delay);
+          return () => clearTimeout(timer);
+        }, [value, delay]);
+
+        return debounced;
+      };
+
+      const validateUser = (values) => {
+        const errors = {};
+
+        if (!values.name || values.name.trim().length < 2) {
+          errors.name = "Ten bat buoc va toi thieu 2 ky tu.";
+        }
+
+        const ageNumber = Number(values.age);
+        if (!Number.isInteger(ageNumber) || ageNumber < 0) {
+          errors.age = "Tuoi phai la so nguyen >= 0.";
+        }
+
+        if (!values.email || !values.email.includes("@") || !values.email.includes(".")) {
+          errors.email = "Email phai chua @ va .";
+        }
+
+        return errors;
+      };
+
+      const SearchBar = ({ search, onChange }) => (
+        <div className="search">
+          <input
+            type="text"
+            placeholder="Tim kiem theo ten, email, dia chi..."
+            value={search}
+            onChange={(event) => onChange(event.target.value)}
+          />
+        </div>
+      );
+
+      const UserTable = ({ users, page, limit, onEdit, onDelete }) => (
+        <div className="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>STT</th>
+                <th>Họ tên</th>
+                <th>Tuổi</th>
+                <th>Email</th>
+                <th>Địa chỉ</th>
+                <th>Thao tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.length === 0 ? (
+                <tr>
+                  <td colSpan="6" className="empty">
+                    Không có dữ liệu
+                  </td>
+                </tr>
+              ) : (
+                users.map((user, index) => (
+                  <tr key={user._id}>
+                    <td>{(page - 1) * limit + index + 1}</td>
+                    <td>{user.name}</td>
+                    <td>{user.age}</td>
+                    <td>{user.email}</td>
+                    <td>{user.address || "-"}</td>
+                    <td>
+                      <div className="row-actions">
+                        <button className="btn btn-secondary" onClick={() => onEdit(user)}>
+                          Sửa
+                        </button>
+                        <button className="btn btn-danger" onClick={() => onDelete(user)}>
+                          Xoá
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      );
+
+      const Pagination = ({ page, totalPages, limit, onPageChange, onLimitChange }) => (
+        <div className="pagination">
+          <div className="meta">
+            <span>Hien thi:</span>
+            <select value={limit} onChange={(event) => onLimitChange(Number(event.target.value))}>
+              {[3, 5, 10].map((value) => (
+                <option key={value} value={value}>
+                  {value}
+                </option>
+              ))}
+            </select>
+            <span>dòng/trang</span>
+          </div>
+          <div className="meta">
+            <button className="btn btn-secondary" disabled={page <= 1} onClick={() => onPageChange(page - 1)}>
+              Prev
+            </button>
+            <span>
+              Trang {page}/{totalPages}
+            </span>
+            <button
+              className="btn btn-secondary"
+              disabled={page >= totalPages}
+              onClick={() => onPageChange(page + 1)}
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      );
+
+      const UserModal = ({ open, onClose, onSubmit, editingUser }) => {
+        const initialState = useMemo(
+          () => ({
+            name: editingUser?.name || "",
+            age: editingUser?.age ?? "",
+            email: editingUser?.email || "",
+            address: editingUser?.address || "",
+          }),
+          [editingUser]
+        );
+
+        const [formValues, setFormValues] = useState(initialState);
+        const [errors, setErrors] = useState({});
+
+        useEffect(() => {
+          setFormValues(initialState);
+          setErrors({});
+        }, [initialState, open]);
+
+        if (!open) return null;
+
+        const handleChange = (field, value) => {
+          setFormValues((prev) => ({ ...prev, [field]: value }));
+        };
+
+        const handleSubmit = (event) => {
+          event.preventDefault();
+
+          const normalized = {
+            name: formValues.name.trim(),
+            age: formValues.age,
+            email: formValues.email.trim(),
+            address: formValues.address.trim(),
+          };
+
+          const validationErrors = validateUser(normalized);
+          setErrors(validationErrors);
+
+          if (Object.keys(validationErrors).length > 0) {
+            return;
+          }
+
+          onSubmit({
+            ...normalized,
+            age: Number(normalized.age),
+          });
+        };
+
+        return (
+          <div className="overlay" role="dialog" aria-modal="true">
+            <div className="modal">
+              <div className="modal-header">
+                <h3 className="modal-title">{editingUser ? "Cap nhat nguoi dung" : "Them nguoi dung"}</h3>
+                <button className="btn btn-secondary" onClick={onClose}>
+                  X
+                </button>
+              </div>
+              <form className="modal-form" onSubmit={handleSubmit}>
+                <div>
+                  <label>Họ tên</label>
+                  <input
+                    type="text"
+                    value={formValues.name}
+                    onChange={(event) => handleChange("name", event.target.value)}
+                  />
+                  {errors.name && <div className="error-text">{errors.name}</div>}
+                </div>
+                <div>
+                  <label>Tuổi</label>
+                  <input
+                    type="number"
+                    value={formValues.age}
+                    onChange={(event) => handleChange("age", event.target.value)}
+                  />
+                  {errors.age && <div className="error-text">{errors.age}</div>}
+                </div>
+                <div>
+                  <label>Email</label>
+                  <input
+                    type="email"
+                    value={formValues.email}
+                    onChange={(event) => handleChange("email", event.target.value)}
+                  />
+                  {errors.email && <div className="error-text">{errors.email}</div>}
+                </div>
+                <div>
+                  <label>Địa chỉ</label>
+                  <input
+                    type="text"
+                    value={formValues.address}
+                    onChange={(event) => handleChange("address", event.target.value)}
+                  />
+                </div>
+                <div className="modal-actions">
+                  <button type="button" className="btn btn-secondary" onClick={onClose}>
+                    Hủy
+                  </button>
+                  <button type="submit" className="btn btn-primary">
+                    Lưu
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        );
+      };
+
+      const App = () => {
+        const [users, setUsers] = useState([]);
+        const [page, setPage] = useState(1);
+        const [limit, setLimit] = useState(5);
+        const [search, setSearch] = useState("");
+        const [total, setTotal] = useState(0);
+        const [totalPages, setTotalPages] = useState(1);
+        const [showModal, setShowModal] = useState(false);
+        const [editingUser, setEditingUser] = useState(null);
+        const [status, setStatus] = useState("");
+        const [toast, setToast] = useState(null);
+
+        const debouncedSearch = useDebounce(search, 500);
+        const normalizedSearch = debouncedSearch.trim();
+
+        const fetchUsers = async ({
+          pageParam = page,
+          limitParam = limit,
+          searchParam = normalizedSearch,
+        } = {}) => {
+          try {
+            setStatus("");
+            const params = new URLSearchParams({
+              page: pageParam,
+              limit: limitParam,
+            });
+
+            if (searchParam) {
+              params.append("search", searchParam.trim());
+            }
+
+            const response = await fetch(`${API_BASE}?${params.toString()}`);
+            const result = await response.json().catch(() => ({}));
+
+            if (!response.ok) {
+              throw new Error(buildErrorMessage(response, result, "Không thể tải dữ liệu."));
+            }
+
+            setUsers(result.data || []);
+            setTotal(result.total || 0);
+            setTotalPages(result.totalPages || 1);
+          } catch (error) {
+            const message = error.message;
+            setStatus(message);
+            setToast({ message, type: "error" });
+          }
+        };
+
+        useEffect(() => {
+          fetchUsers();
+        }, [page, limit, normalizedSearch]);
+
+        useEffect(() => {
+          setPage(1);
+        }, [limit]);
+
+        useEffect(() => {
+          setPage(1);
+        }, [normalizedSearch]);
+
+        const handleOpenCreate = () => {
+          setEditingUser(null);
+          setShowModal(true);
+        };
+
+        const handleSubmit = async (payload) => {
+          try {
+            const isEdit = Boolean(editingUser);
+            const url = isEdit ? `${API_BASE}/${editingUser._id}` : API_BASE;
+            const method = isEdit ? "PUT" : "POST";
+
+            const response = await fetch(url, {
+              method,
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            });
+
+            const result = await response.json().catch(() => ({}));
+
+            if (!response.ok) {
+              throw new Error(buildErrorMessage(response, result, "Khong the luu du lieu."));
+            }
+
+            setShowModal(false);
+            setEditingUser(null);
+            fetchUsers({ pageParam: 1 });
+            setPage(1);
+          } catch (error) {
+            const message = error.message;
+            setStatus(message);
+            setToast({ message, type: "error" });
+          }
+        };
+
+        const handleDelete = async (user) => {
+          const confirmed = window.confirm(`Xoa nguoi dung ${user.name}?`);
+          if (!confirmed) return;
+
+          try {
+            const response = await fetch(`${API_BASE}/${user._id}`, {
+              method: "DELETE",
+            });
+
+            const result = await response.json().catch(() => ({}));
+            if (!response.ok) {
+              throw new Error(buildErrorMessage(response, result, "Khong the xoa nguoi dung."));
+            }
+
+            fetchUsers();
+          } catch (error) {
+            const message = error.message;
+            setStatus(message);
+            setToast({ message, type: "error" });
+          }
+        };
+
+        useEffect(() => {
+          if (!toast) return;
+          const timer = setTimeout(() => setToast(null), 3000);
+          return () => clearTimeout(timer);
+        }, [toast]);
+
+        return (
+          <div className="page">
+            <div className="shell">
+              <div className="header">
+                <div>
+                  <h1 className="title">Quản lý người dùng</h1>
+                  <p className="subtitle">Tìm kiếm, phân trang</p>
+                </div>
+                <div className="actions">
+                  <SearchBar search={search} onChange={setSearch} />
+                  <button className="btn btn-primary" onClick={handleOpenCreate}>
+                    + Thêm người dùng
+                  </button>
+                </div>
+              </div>
+
+              <div className="panel">
+                <UserTable
+                  users={users}
+                  page={page}
+                  limit={limit}
+                  onEdit={(user) => {
+                    setEditingUser(user);
+                    setShowModal(true);
+                  }}
+                  onDelete={handleDelete}
+                />
+
+                <Pagination
+                  page={page}
+                  totalPages={totalPages}
+                  limit={limit}
+                  onPageChange={setPage}
+                  onLimitChange={setLimit}
+                />
+              </div>
+
+              <div className="status">Tổng: {total} người dùng</div>
+              {status && <div className="error-text">{status}</div>}
+            </div>
+
+            {toast && (
+              <div className={`toast ${toast.type}`} role="status">
+                <span className="dot" aria-hidden="true"></span>
+                <span>{toast.message}</span>
+              </div>
+            )}
+
+            <UserModal
+              open={showModal}
+              onClose={() => {
+                setShowModal(false);
+                setEditingUser(null);
+              }}
+              onSubmit={handleSubmit}
+              editingUser={editingUser}
+            />
+          </div>
+        );
+      };
+
+      ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+    </script>
+  </body>
+</html>
